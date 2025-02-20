@@ -1,16 +1,18 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict, CliApp
+from pydantic_settings import BaseSettings, SettingsConfigDict, CliApp, CliImplicitFlag
 
 
 class Config(BaseSettings):
 	model_config = SettingsConfigDict(
 		cli_prog_name='blackcraft_exporter',
 		env_prefix='BCE_',
+		cli_kebab_case=True,
 	)
 
 	host: str = '0.0.0.0'
 	port: int = 9165
 	workers: int = 1
 
+	dev_mode: CliImplicitFlag[bool] = False
 
 __config = Config()
 
