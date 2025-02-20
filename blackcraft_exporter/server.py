@@ -8,7 +8,7 @@ from prometheus_client import generate_latest, CollectorRegistry
 from pydantic import BaseModel, ConfigDict, field_validator, Field
 from starlette.responses import PlainTextResponse
 
-from blackcraft_exporter import utils
+from blackcraft_exporter import __version__, utils
 from blackcraft_exporter.config import get_config
 from blackcraft_exporter.context import ProbeContext
 from blackcraft_exporter.probes import probe_java, probe_bedrock, ProbeFunc
@@ -17,6 +17,7 @@ app = FastAPI()
 app.add_middleware(GZipMiddleware)
 
 logger = logging.getLogger('uvicorn.error')
+logger.info(f'Starting BlackCraft Exporter v{__version__}')
 if get_config().dev_mode:
 	logger.warning('Development mode on')
 
