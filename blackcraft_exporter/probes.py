@@ -8,6 +8,7 @@ from typing_extensions import Callable
 from blackcraft_exporter.context import ProbeContext
 
 ProbeFunc = Callable[[ProbeContext], Awaitable[None]]
+MAX_INFO_FIELD_LENGTH = 256
 
 
 async def __handle_server_status(ctx: ProbeContext, status: BaseStatusResponse):
@@ -15,9 +16,9 @@ async def __handle_server_status(ctx: ProbeContext, status: BaseStatusResponse):
 	ctx.gauge(name='probe_server_players_online', doc='Current number of players online').set(status.players.online)
 	ctx.gauge(name='probe_server_players_max', doc='Maximum number of players allowed on the server').set(status.players.max)
 	ctx.gauge(name='probe_server_info', doc='Detailed information about the server', labels={
-		'version': status.version.name,
+		'version': status.version.name[:MAX_INFO_FIELD_LENGTH],
 		'protocol': status.version.protocol,
-		'motd': status.motd.to_plain(),
+		'motd': status.motd.to_plain()[:MAX_INFO_FIELD_LENGTH],
 	}).set(1)
 
 
