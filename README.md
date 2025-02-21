@@ -8,7 +8,7 @@ A [blackbox_exporter](https://github.com/prometheus/blackbox_exporter)-like prob
 
 ## To run
 
-The BlackCraft Exporter requires no configuration file and can be started with no extra argument.
+BlackCraft Exporter requires no configuration file and can be started with no extra argument.
 
 By default, it will listen on tcp `0.0.0.0:9165`. Run with `--help` argument to see all available CLI arguments
 
@@ -17,6 +17,8 @@ By default, it will listen on tcp `0.0.0.0:9165`. Run with `--help` argument to 
 TODO
 
 ### with docker
+
+BlackCraft Exporter is available in DockerHub: [fallenbreath/blackcraft_exporter](https://hub.docker.com/r/fallenbreath/blackcraft_exporter)
 
 ```bash
 docker run --rm -p 9165/tcp fallenbreath/blackcraft_exporter
@@ -95,4 +97,4 @@ scrape_configs:
 
 ### Grafana
 
-Example dashboard for the BlackCraft Exporter: https://grafana.com/grafana/dashboards/22915
+Example dashboard for BlackCraft Exporter: https://grafana.com/grafana/dashboards/22915
