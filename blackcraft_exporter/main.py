@@ -3,11 +3,15 @@ from uvicorn.config import LOGGING_CONFIG
 
 from blackcraft_exporter.config import load_config_from_argv
 
-LOGGING_CONFIG['formatters']['default']['fmt'] = '%(process)s %(asctime)s.%(msecs)03d %(levelprefix)s %(message)s'
-LOGGING_CONFIG['formatters']['default']['datefmt'] = '%Y-%m-%d %H:%M:%S'
+
+def boostrap():
+	for cfg in LOGGING_CONFIG['formatters'].values():
+		cfg['fmt'] = '%(process)s %(asctime)s.%(msecs)03d - ' + cfg['fmt']
+		cfg['datefmt'] = '%Y-%m-%d %H:%M:%S'
 
 
 def main():
+	boostrap()
 	config = load_config_from_argv()
 
 	uvicorn.run(
