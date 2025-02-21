@@ -1,5 +1,5 @@
 import asyncio
-from typing import Optional, Annotated
+from typing import Annotated
 
 from fastapi import FastAPI, Query
 from fastapi.middleware.gzip import GZipMiddleware
@@ -23,7 +23,7 @@ if get_config().dev_mode:
 
 
 @app.get('/', response_class=PlainTextResponse)
-async def root():
+def root():
 	return 'BlackCraft Exporter is running'
 
 
@@ -39,7 +39,7 @@ class ProbeRequest(BaseModel):
 
 	type: str
 	target: str
-	timeout: Optional[float] = Field(default=None, ge=0)
+	timeout: float = Field(default=5, ge=0)
 
 	@field_validator('type')
 	@classmethod
@@ -57,14 +57,14 @@ class ProbeRequest(BaseModel):
 
 
 @app.get('/probe', response_class=PlainTextResponse)
-async def probe(req: Annotated[ProbeRequest, Query()]):
+def probe(req: Annotated[ProbeRequest, Query()]):
 	probe_func = SERVER_TYPES[req.type]
 
 	ctx = ProbeContext(CollectorRegistry(auto_describe=True), req.target, req.timeout)
 	with ctx.time_cost_gauge(name='probe_duration_seconds', doc='Time taken for status probe in seconds'):
 		probe_success = 0
 		try:
-			await probe_func(ctx)
+			probe_func(ctx)
 		except asyncio.TimeoutError:
 			logger.error(f'Probe timed out, req {req!r}')
 		except Exception as e:
@@ -78,5 +78,5 @@ async def probe(req: Annotated[ProbeRequest, Query()]):
 
 
 @app.get('/metrics', response_class=PlainTextResponse)
-async def metrics():
+def metrics():
 	return generate_latest()

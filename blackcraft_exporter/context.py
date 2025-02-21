@@ -8,11 +8,16 @@ from prometheus_client import CollectorRegistry, Gauge
 from blackcraft_exporter.constants import PROMETHEUS_METRIC_NAMESPACE
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(frozen=True)
 class ProbeContext:
 	registry: CollectorRegistry
 	target: str
-	timeout: Optional[float]
+	timeout: float
+
+	__start_time: float = dataclasses.field(default_factory=time.time)
+
+	def get_timeout_remaining(self) -> float:
+		return max(0.0, self.timeout - (time.time() - self.__start_time))
 
 	def gauge(self, name: str, doc: str, *, labels: Optional[dict[str, str]] = None) -> Gauge:
 		gauge = Gauge(
