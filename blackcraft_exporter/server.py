@@ -27,7 +27,7 @@ async def root():
 	return 'BlackCraft Exporter is running'
 
 
-MODULES: dict[str, ProbeFunc] = {
+SERVER_TYPES: dict[str, ProbeFunc] = {
 	'java': probe_java,
 	'bedrock': probe_bedrock,
 }
@@ -37,15 +37,15 @@ MODULES: dict[str, ProbeFunc] = {
 class ProbeRequest(BaseModel):
 	model_config = ConfigDict(extra='forbid')
 
-	module: str
+	type: str
 	target: str
 	timeout: Optional[float] = Field(default=None, ge=0)
 
-	@field_validator('module')
+	@field_validator('type')
 	@classmethod
-	def validate_module(cls, v: str) -> str:
-		if v not in MODULES:
-			raise ValueError(f"Invalid module name: {v!r}, should be one of {', '.join(MODULES.keys())}")
+	def validate_type(cls, v: str) -> str:
+		if v not in SERVER_TYPES:
+			raise ValueError(f"Invalid type: {v!r}, should be one of {', '.join(SERVER_TYPES.keys())}")
 		return v
 
 	@field_validator('target')
@@ -58,7 +58,7 @@ class ProbeRequest(BaseModel):
 
 @app.get('/probe', response_class=PlainTextResponse)
 async def probe(req: Annotated[ProbeRequest, Query()]):
-	probe_func = MODULES[req.module]
+	probe_func = SERVER_TYPES[req.type]
 
 	ctx = ProbeContext(CollectorRegistry(auto_describe=True), req.target, req.timeout)
 	with ctx.time_cost_gauge(name='probe_duration_seconds', doc='Time taken for status probe in seconds'):
