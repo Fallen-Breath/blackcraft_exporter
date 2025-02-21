@@ -38,7 +38,7 @@ Just like the blackbox exporter, you need to send an HTTP GET request to the `/p
 to get the metrics of the target Minecraft server
 
 ```bash
-curl http://localhost:9115/probe?type=java&target=mc.example.com
+curl http://localhost:9165/probe?type=java&target=mc.example.com
 ```
 
 Query parameters:
