@@ -1,6 +1,6 @@
-import asyncio
 from typing import Annotated
 
+import dns
 from fastapi import FastAPI, Query
 from fastapi.middleware.gzip import GZipMiddleware
 from prometheus_client import generate_latest, CollectorRegistry
@@ -65,7 +65,7 @@ def probe(req: Annotated[ProbeRequest, Query()]):
 		probe_success = 0
 		try:
 			probe_func(ctx)
-		except asyncio.TimeoutError:
+		except (TimeoutError, dns.exception.Timeout):
 			logger.error(f'Probe timed out, req {req!r}')
 		except Exception as e:
 			msg = f'Probe failed, req {req!r}: ({type(e)}) {e}'
