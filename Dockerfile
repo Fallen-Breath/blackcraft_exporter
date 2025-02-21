@@ -1,6 +1,6 @@
 ARG PYTHON_VERSION=3.11
 
-FROM python:${PYTHON_VERSION}-slim AS builder
+FROM python:${PYTHON_VERSION}-alpine AS builder
 ARG POETRY_VERSION=2.1.1
 
 RUN pip3 install --no-cache-dir poetry==${POETRY_VERSION} poetry-plugin-export
@@ -9,7 +9,7 @@ COPY pyproject.toml poetry.lock ./
 RUN poetry export --output=requirements.txt && cat ./requirements.txt
 
 
-FROM python:${PYTHON_VERSION}-slim
+FROM python:${PYTHON_VERSION}-alpine
 
 WORKDIR /app
 COPY --from=builder /app/requirements.txt ./
