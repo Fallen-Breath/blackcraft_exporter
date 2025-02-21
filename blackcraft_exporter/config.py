@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict, CliApp, CliImplicitFlag
 
 
@@ -8,11 +9,13 @@ class Config(BaseSettings):
 		cli_kebab_case=True,
 	)
 
-	host: str = '0.0.0.0'
-	port: int = 9165
-	workers: int = 1
+	host: str = Field(default='0.0.0.0', description='Host to listen on')
+	port: int = Field(default=9165, description='Port to listen on')
+	workers: int = Field(default=1, description='The number of uvicorn worker')
 
-	dev_mode: CliImplicitFlag[bool] = False
+	debug: CliImplicitFlag[bool] = Field(default=False, description='Enable debug logging')
+
+	dev_mode: CliImplicitFlag[bool] = Field(default=False, description='Enable development mode. Not for production use')
 
 __config = Config()
 

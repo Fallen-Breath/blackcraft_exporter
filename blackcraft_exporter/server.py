@@ -1,5 +1,4 @@
 import asyncio
-import logging
 from typing import Optional, Annotated
 
 from fastapi import FastAPI, Query
@@ -11,12 +10,13 @@ from starlette.responses import PlainTextResponse
 from blackcraft_exporter import __version__, utils
 from blackcraft_exporter.config import get_config
 from blackcraft_exporter.context import ProbeContext
+from blackcraft_exporter.logger import get_logger
 from blackcraft_exporter.probes import probe_java, probe_bedrock, ProbeFunc
 
 app = FastAPI()
 app.add_middleware(GZipMiddleware)
 
-logger = logging.getLogger('uvicorn.error')
+logger = get_logger()
 logger.info(f'Starting BlackCraft Exporter v{__version__}')
 if get_config().dev_mode:
 	logger.warning('Development mode on')

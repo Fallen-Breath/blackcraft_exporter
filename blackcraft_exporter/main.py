@@ -1,18 +1,19 @@
+import logging
+
 import uvicorn
-from uvicorn.config import LOGGING_CONFIG
 
 from blackcraft_exporter.config import load_config_from_argv
-
-
-def boostrap():
-	for cfg in LOGGING_CONFIG['formatters'].values():
-		cfg['fmt'] = '%(process)s %(asctime)s.%(msecs)03d - ' + cfg['fmt']
-		cfg['datefmt'] = '%Y-%m-%d %H:%M:%S'
+from blackcraft_exporter.logger import get_logger  # this also triggers our logging boostrap
 
 
 def main():
-	boostrap()
 	config = load_config_from_argv()
+
+	logger = get_logger()
+	if config.debug:
+		logger.setLevel(logging.DEBUG)
+	logger.debug(f'Debug mode on')
+	logger.debug(f'{config!r}')
 
 	uvicorn.run(
 		app='blackcraft_exporter.server:app',
