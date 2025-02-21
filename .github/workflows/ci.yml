@@ -3,7 +3,8 @@ name: CI
 on:
   push:
     paths:
-      - blackcraft_exporter
+      - ".github/**"
+      - "blackcraft_exporter/**"
       - poetry.lock
       - pyproject.toml
       - Dockerfile
