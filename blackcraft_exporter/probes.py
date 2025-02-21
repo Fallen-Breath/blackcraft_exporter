@@ -24,7 +24,7 @@ async def __handle_server_status(ctx: ProbeContext, status: BaseStatusResponse):
 
 async def probe_java(ctx: ProbeContext):
 	async def do_probe() -> BaseStatusResponse:
-		with ctx.time_cost_gauge('probe_srv_lookup_seconds', 'The time taken for SRV record lookup in seconds'):
+		with ctx.time_cost_gauge('probe_srv_lookup_seconds', 'Time taken for SRV record lookup in seconds'):
 			server = await mcstatus.JavaServer.async_lookup(ctx.target, timeout=ctx.timeout)
 		return await server.async_status()
 
