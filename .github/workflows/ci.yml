@@ -2,6 +2,12 @@ name: CI
 
 on:
   push:
+    paths:
+      - blackcraft_exporter
+      - poetry.lock
+      - pyproject.toml
+      - Dockerfile
+      - .dockerignore
   pull_request:
 
 jobs:
