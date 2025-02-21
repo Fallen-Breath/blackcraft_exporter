@@ -1,8 +1,9 @@
 import mcstatus
+from mcstatus import BedrockServer
+from mcstatus.bedrock_status import BedrockServerStatus
 from mcstatus.pinger import ServerPinger
 from mcstatus.protocol.connection import TCPSocketConnection
-from mcstatus.status_response import JavaStatusResponse
-from mcstatus.utils import retry
+from mcstatus.status_response import JavaStatusResponse, BedrockStatusResponse
 from typing_extensions import override, Callable
 
 from blackcraft_exporter.logger import get_logger
@@ -10,20 +11,19 @@ from blackcraft_exporter.logger import get_logger
 
 class JavaServerPlus(mcstatus.JavaServer):
 	"""
-	Perform status + ping in one connection
+	Remove retries; Perform status + ping in one connection
 	"""
 	@override
 	def status(self, timeout_getter: Callable[[], float]) -> JavaStatusResponse:
 		return super().status(timeout_getter=timeout_getter)
 
 	@override
-	@retry(tries=3)
-	def _retry_status(self, connection: TCPSocketConnection, *, timeout_getter: Callable[[], float]) -> JavaStatusResponse:
+	def _retry_status(self, connection: TCPSocketConnection, **kwargs) -> JavaStatusResponse:
 		logger = get_logger()
 		pinger = ServerPinger(connection, address=self.address)
 
 		def update_timeout():
-			connection.socket.settimeout(timeout_getter())
+			connection.socket.settimeout(kwargs['timeout_getter']())
 
 		update_timeout()
 		pinger.handshake()
@@ -37,3 +37,12 @@ class JavaServerPlus(mcstatus.JavaServer):
 			update_timeout()
 			result.latency = pinger.test_ping()
 		return result
+
+
+class BedrockServerPlus(BedrockServer):
+	"""
+	Remove retries
+	"""
+	@override
+	def status(self, **kwargs) -> BedrockStatusResponse:
+		return BedrockServerStatus(self.address, self.timeout).read_status()
