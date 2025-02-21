@@ -39,7 +39,7 @@ class ProbeRequest(BaseModel):
 
 	type: str
 	target: str
-	timeout: float = Field(default=5, ge=0)
+	timeout: float = Field(default=10, ge=0)
 
 	@field_validator('type')
 	@classmethod

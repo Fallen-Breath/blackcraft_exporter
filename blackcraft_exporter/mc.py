@@ -4,7 +4,7 @@ from mcstatus.bedrock_status import BedrockServerStatus
 from mcstatus.pinger import ServerPinger
 from mcstatus.protocol.connection import TCPSocketConnection
 from mcstatus.status_response import JavaStatusResponse, BedrockStatusResponse
-from typing_extensions import override, Callable
+from typing_extensions import override
 
 from blackcraft_exporter.logger import get_logger
 
@@ -13,10 +13,6 @@ class JavaServerPlus(mcstatus.JavaServer):
 	"""
 	Remove retries; Perform status + ping in one connection
 	"""
-	@override
-	def status(self, timeout_getter: Callable[[], float]) -> JavaStatusResponse:
-		return super().status(timeout_getter=timeout_getter)
-
 	@override
 	def _retry_status(self, connection: TCPSocketConnection, **kwargs) -> JavaStatusResponse:
 		logger = get_logger()

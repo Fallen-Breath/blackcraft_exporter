@@ -43,7 +43,7 @@ Query parameters:
 
 - `type`: The type of the Minecraft server. Options: `java`, `bedrock`
 - `target`: The address to the Minecraft server
-- `timeout`: (optional) The maximum request timeout in seconds. Default: `5`
+- `timeout`: (optional) The maximum request timeout in seconds, including all steps inside probing. Default: `10`
 
 ### Prometheus
 
