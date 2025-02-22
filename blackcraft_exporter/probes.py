@@ -1,3 +1,6 @@
+import asyncio
+from typing import Awaitable
+
 import mcstatus
 from mcstatus.status_response import BaseStatusResponse
 from typing_extensions import Callable
@@ -6,7 +9,7 @@ from blackcraft_exporter.context import ProbeContext
 from blackcraft_exporter.logger import get_logger
 from blackcraft_exporter.mc import JavaServerPlus
 
-ProbeFunc = Callable[[ProbeContext], None]
+ProbeFunc = Callable[[ProbeContext], Awaitable[None]]
 MAX_INFO_FIELD_LENGTH = 256
 
 
@@ -21,16 +24,22 @@ def __handle_server_status(ctx: ProbeContext, status: BaseStatusResponse):
 	}).set(1)
 
 
-def probe_java(ctx: ProbeContext):
-	with ctx.time_cost_gauge('probe_srv_lookup_seconds', 'Time taken for SRV record lookup in seconds'):
-		server = JavaServerPlus.lookup(ctx.target, timeout=ctx.get_timeout_remaining())
-	get_logger().debug(f'JavaServer lookup result for {ctx.target!r}: {server.address}')
+async def probe_java(ctx: ProbeContext):
+	async def do_probe() -> BaseStatusResponse:
+		with ctx.time_cost_gauge('probe_srv_lookup_seconds', 'Time taken for SRV record lookup in seconds'):
+			server = await JavaServerPlus.async_lookup(ctx.target)
+		get_logger().debug(f'JavaServer lookup result for {ctx.target!r}: {server.address}')
 
-	status = server.status(timeout_getter=ctx.get_timeout_remaining)
+		return await server.async_status()
+
+	status = await asyncio.wait_for(do_probe(), timeout=ctx.get_timeout_remaining())
 	__handle_server_status(ctx, status)
 
 
-def probe_bedrock(ctx: ProbeContext):
-	server = mcstatus.BedrockServer(ctx.target, timeout=ctx.get_timeout_remaining())
-	status = server.status()
+async def probe_bedrock(ctx: ProbeContext):
+	async def do_probe() -> BaseStatusResponse:
+		server = mcstatus.BedrockServer(ctx.target)
+		return await server.async_status()
+
+	status = await asyncio.wait_for(do_probe(), timeout=ctx.get_timeout_remaining())
 	__handle_server_status(ctx, status)

@@ -15,15 +15,11 @@ from blackcraft_exporter.probes import probe_java, probe_bedrock, ProbeFunc
 
 app = FastAPI()
 app.add_middleware(GZipMiddleware)
-
 logger = get_logger()
-logger.info(f'Starting BlackCraft Exporter v{__version__}')
-if get_config().dev_mode:
-	logger.warning('Development mode on')
 
 
 @app.get('/', response_class=PlainTextResponse)
-def root():
+async def root():
 	return 'BlackCraft Exporter is running'
 
 
@@ -57,14 +53,14 @@ class ProbeRequest(BaseModel):
 
 
 @app.get('/probe', response_class=PlainTextResponse)
-def probe(req: Annotated[ProbeRequest, Query()]):
+async def probe(req: Annotated[ProbeRequest, Query()]):
 	probe_func = SERVER_TYPES[req.type]
 
 	ctx = ProbeContext(CollectorRegistry(auto_describe=True), req.target, req.timeout)
 	with ctx.time_cost_gauge(name='probe_duration_seconds', doc='Time taken for status probe in seconds'):
 		probe_success = 0
 		try:
-			probe_func(ctx)
+			await probe_func(ctx)
 		except (TimeoutError, dns.exception.Timeout):
 			logger.error(f'Probe timed out, req {req!r}')
 		except Exception as e:
@@ -78,5 +74,14 @@ def probe(req: Annotated[ProbeRequest, Query()]):
 
 
 @app.get('/metrics', response_class=PlainTextResponse)
-def metrics():
+async def metrics():
 	return generate_latest()
+
+
+def __init():
+	logger.info(f'Starting BlackCraft Exporter v{__version__}')
+	if get_config().dev_mode:
+		logger.warning('Development mode on')
+
+
+__init()
