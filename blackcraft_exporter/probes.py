@@ -19,7 +19,7 @@ def __handle_server_status(ctx: ProbeContext, status: BaseStatusResponse):
 	ctx.gauge(name='server_players_max', doc='Maximum number of players allowed on the server').set(status.players.max)
 	ctx.gauge(name='server_info', doc='Detailed information about the server', labels={
 		'version': status.version.name[:MAX_INFO_FIELD_LENGTH],
-		'protocol': status.version.protocol,
+		'protocol': str(status.version.protocol),
 		'motd': status.motd.to_plain()[:MAX_INFO_FIELD_LENGTH],
 	}).set(1)
 
