@@ -45,7 +45,6 @@ class JavaServerPlus(mcstatus.JavaServer):
 	1. Remove retries
 	2. Perform status + ping in one connection
 	"""
-
 	async def async_status_plus(self, *, ctx: ProbeContext) -> JavaStatusResponse:
 		async with TCPAsyncSocketConnectionPlus(self.address, self.timeout, proxy=ctx.proxy) as connection:
 			return await self.__do_async_status_plus(connection, ctx=ctx)

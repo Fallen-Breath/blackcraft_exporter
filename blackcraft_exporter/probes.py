@@ -43,3 +43,9 @@ async def probe_bedrock(ctx: ProbeContext):
 
 	status = await ctx.do_with_timeout_and_retries(do_probe)
 	__handle_server_status(ctx, status)
+
+
+SERVER_TYPES: dict[str, ProbeFunc] = {
+	'java': probe_java,
+	'bedrock': probe_bedrock,
+}
