@@ -36,8 +36,8 @@ class ProbeRequest(BaseModel):
 	type: str
 	target: str
 	timeout: float = Field(default=10, ge=0)
-	proxy: Optional[str] = None
 	mimic: Optional[str] = None
+	proxy: Optional[str] = None
 
 	@field_validator('type')
 	@classmethod
