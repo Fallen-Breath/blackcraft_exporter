@@ -10,3 +10,8 @@ def validate_ip_port(ip_port: str, needs_port: bool) -> bool:
 		return url.netloc == ip_port and bool(url.hostname)
 	except ValueError:
 		return False
+
+
+def is_timeout_exception(e: Exception) -> bool:
+	import dns
+	return isinstance(e, (TimeoutError, dns.exception.Timeout))

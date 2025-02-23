@@ -7,9 +7,18 @@ from typing import Any, Generator, Optional, TypeVar, Awaitable, Callable, List
 from prometheus_client import CollectorRegistry, Gauge
 from websockets.asyncio import async_timeout
 
+from blackcraft_exporter import utils
 from blackcraft_exporter.constants import PROMETHEUS_METRIC_NAMESPACE
 
 _T = TypeVar('_T')
+
+class RetryExceptionGroup(ExceptionGroup):
+	def __str__(self):
+		exceptions_str = ', '.join(f'({type(e)}) {e}' for e in self.exceptions)
+		return f'{self.message}: {exceptions_str}'
+
+	def all_failures_are_timeout(self) -> bool:
+		return all(map(utils.is_timeout_exception, self.exceptions))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -63,4 +72,4 @@ class ProbeContext:
 						raise
 					except Exception as e:
 						errors.append(e)
-		raise ExceptionGroup(f'All {self.max_attempts} attempts failed', errors)
+		raise RetryExceptionGroup(f'All {self.max_attempts} attempts failed', errors)
