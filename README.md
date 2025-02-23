@@ -60,7 +60,7 @@ scrape_configs:
   - job_name: blackcraft          # Can be any name you want
     metrics_path: /probe
     params:
-      type: [java]                # Set type to java
+      type: [ java ]                # Set type to java
     static_configs:
       - targets:
         - 192.168.1.1             # IP only
@@ -68,7 +68,7 @@ scrape_configs:
         - mc.example.com          # Hostname only. SRV is supported
         - mc.example.com:25566    # Hostname with port
     relabel_configs:
-      - source_labels: [__address__]
+      - source_labels: [ __address__ ]
         target_label: __param_target
       - target_label: __address__
         replacement: localhost:9165  # Your BlackCraft Exporter's hostname:port
@@ -91,9 +91,9 @@ scrape_configs:
             type: 'bedrock'
           targets: [ 'bedrock.example.com:25566' ]
     relabel_configs:
-      - source_labels: [type]  # maps the "type" label into the query parameter
+      - source_labels: [ type ]  # maps the "type" label into the query parameter
         target_label: __param_type
-      - source_labels: [__address__]
+      - source_labels: [ __address__ ]
         target_label: __param_target
       - target_label: __address__
         replacement: localhost:9165  # Your BlackCraft Exporter's hostname:port
