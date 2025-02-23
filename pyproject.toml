@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "blackcraft_exporter"
-version = "0.1.2"
+version = "0.1.3"
 description = "A blackbox_exporter-like prober for Minecraft"
 authors = ["Fallen_Breath"]
 license = "GPLv3"
