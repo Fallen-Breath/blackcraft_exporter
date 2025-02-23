@@ -31,7 +31,6 @@ class TCPAsyncSocketConnectionPlus(TCPAsyncSocketConnection):
 			from python_socks.async_.asyncio import Proxy
 			proxy = Proxy.from_url(self.proxy)
 			sock = await proxy.connect(dest_host=self._addr.host, dest_port=self._addr.port)
-			logger.info(f'Connected to proxy {proxy}')
 			conn_coro = asyncio.open_connection(sock=sock)
 		else:
 			conn_coro = asyncio.open_connection(host=self._addr.host, port=self._addr.port)
