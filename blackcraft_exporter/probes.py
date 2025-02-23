@@ -25,21 +25,19 @@ def __handle_server_status(ctx: ProbeContext, status: BaseStatusResponse):
 
 
 async def probe_java(ctx: ProbeContext):
-	async def do_probe() -> BaseStatusResponse:
+	async with asyncio.timeout(ctx.get_timeout_remaining()):
 		with ctx.time_cost_gauge('probe_srv_lookup_seconds', 'Time taken for SRV record lookup in seconds'):
 			server = await JavaServerPlus.async_lookup(ctx.target)
 		get_logger().debug(f'JavaServer lookup result for {ctx.target!r}: {server.address}')
 
-		return await server.async_status()
+		status = await server.async_status()
 
-	status = await asyncio.wait_for(do_probe(), timeout=ctx.get_timeout_remaining())
 	__handle_server_status(ctx, status)
 
 
 async def probe_bedrock(ctx: ProbeContext):
-	async def do_probe() -> BaseStatusResponse:
+	async with asyncio.timeout(ctx.get_timeout_remaining()):
 		server = mcstatus.BedrockServer(ctx.target)
-		return await server.async_status()
+		status = await server.async_status()
 
-	status = await asyncio.wait_for(do_probe(), timeout=ctx.get_timeout_remaining())
 	__handle_server_status(ctx, status)
