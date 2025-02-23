@@ -50,6 +50,7 @@ Query parameters:
 - `proxy`: (optional, java only) If provided, connect to the server using the given proxy address
   - Supported http, socks4, socks5 proxy. See the [python-socks](https://github.com/romis2012/python-socks) library for more information
   - The address syntax is something like `http://127.0.0.1:1081` or `socks5://user:password@127.0.0.1:1080`
+- `max_attempts`: (optional) The maximum probe attempts, including retries. Note that each attempt has the timeout of `timeout / max_attempts`. Default: `1`
 
 ### Prometheus
 

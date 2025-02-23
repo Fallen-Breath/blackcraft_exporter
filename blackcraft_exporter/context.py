@@ -1,11 +1,15 @@
+import asyncio
 import contextlib
 import dataclasses
 import time
-from typing import Any, Generator, Optional
+from typing import Any, Generator, Optional, TypeVar, Awaitable, Callable, List
 
 from prometheus_client import CollectorRegistry, Gauge
+from websockets.asyncio import async_timeout
 
 from blackcraft_exporter.constants import PROMETHEUS_METRIC_NAMESPACE
+
+_T = TypeVar('_T')
 
 
 @dataclasses.dataclass(frozen=True)
@@ -15,6 +19,7 @@ class ProbeContext:
 	timeout: float
 	mimic: Optional[str]
 	proxy: Optional[str]
+	max_attempts: int
 
 	__start_time: float = dataclasses.field(default_factory=time.time)
 
@@ -41,3 +46,21 @@ class ProbeContext:
 			yield gauge
 		finally:
 			gauge.set(time.time() - start)
+
+	@contextlib.asynccontextmanager
+	async def timeout_guard(self):
+		async with async_timeout.timeout(self.timeout):
+			yield
+
+	async def do_with_timeout_and_retries(self, func: Callable[[], Awaitable[_T]]) -> _T:
+		errors: List[Exception] = []
+		async with self.timeout_guard():
+			for attempt in range(self.max_attempts):
+				async with async_timeout.timeout(self.timeout / self.max_attempts):
+					try:
+						return await func()
+					except asyncio.CancelledError:
+						raise
+					except Exception as e:
+						errors.append(e)
+		raise ExceptionGroup(f'All {self.max_attempts} attempts failed', errors)

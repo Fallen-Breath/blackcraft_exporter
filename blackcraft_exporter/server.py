@@ -38,6 +38,7 @@ class ProbeRequest(BaseModel):
 	timeout: float = Field(default=10, ge=0)
 	mimic: Optional[str] = None
 	proxy: Optional[str] = None
+	max_attempts: int = Field(default=1, ge=1)
 
 	@field_validator('type')
 	@classmethod
@@ -79,6 +80,7 @@ async def probe(req: Annotated[ProbeRequest, Query()]):
 		timeout=req.timeout,
 		mimic=req.mimic,
 		proxy=req.proxy,
+		max_attempts=req.max_attempts,
 	)
 	with ctx.time_cost_gauge(name='probe_duration_seconds', doc='Time taken for status probe in seconds'):
 		probe_success = 0
