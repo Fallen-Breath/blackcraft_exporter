@@ -36,6 +36,7 @@ class ProbeRequest(BaseModel):
 	type: str
 	target: str
 	timeout: float = Field(default=10, ge=0)
+	proxy: Optional[str] = None
 	mimic: Optional[str] = None
 
 	@field_validator('type')
@@ -59,6 +60,14 @@ class ProbeRequest(BaseModel):
 			raise ValueError(f"Invalid mimic: {mimic!r}")
 		return mimic
 
+	@field_validator('proxy')
+	@classmethod
+	def validate_proxy(cls, proxy: Optional[str]) -> Optional[str]:
+		from python_socks import parse_proxy_url
+		if proxy:
+			parse_proxy_url(proxy)
+		return proxy
+
 
 @app.get('/probe', response_class=PlainTextResponse)
 async def probe(req: Annotated[ProbeRequest, Query()]):
@@ -69,6 +78,7 @@ async def probe(req: Annotated[ProbeRequest, Query()]):
 		target=req.target,
 		timeout=req.timeout,
 		mimic=req.mimic,
+		proxy=req.proxy,
 	)
 	with ctx.time_cost_gauge(name='probe_duration_seconds', doc='Time taken for status probe in seconds'):
 		probe_success = 0

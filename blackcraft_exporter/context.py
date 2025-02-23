@@ -14,6 +14,7 @@ class ProbeContext:
 	target: str
 	timeout: float
 	mimic: Optional[str]
+	proxy: Optional[str]
 
 	__start_time: float = dataclasses.field(default_factory=time.time)
 

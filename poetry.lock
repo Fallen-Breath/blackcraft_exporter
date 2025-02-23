@@ -407,6 +407,24 @@ files = [
 cli = ["click (>=5.0)"]
 
 [[package]]
+name = "python-socks"
+version = "2.7.1"
+description = "Proxy (SOCKS4, SOCKS5, HTTP CONNECT) client for Python"
+optional = false
+python-versions = ">=3.8.0"
+groups = ["main"]
+files = [
+    {file = "python_socks-2.7.1-py3-none-any.whl", hash = "sha256:2603c6454eeaeb82b464ad705be188989e8cf1a4a16f0af3c921d6dd71a49cec"},
+    {file = "python_socks-2.7.1.tar.gz", hash = "sha256:f1a0bb603830fe81e332442eada96757b8f8dec02bd22d1d6f5c99a79704c550"},
+]
+
+[package.extras]
+anyio = ["anyio (>=3.3.4,<5.0.0)"]
+asyncio = ["async-timeout (>=4.0) ; python_version < \"3.11\""]
+curio = ["curio (>=1.4)"]
+trio = ["trio (>=0.24)"]
+
+[[package]]
 name = "pyyaml"
 version = "6.0.2"
 description = "YAML parser and emitter for Python"
@@ -777,4 +795,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "73d9b2bdb746e37981c866fd71de84a4690bec2d33953bc496caa841fd59ab2f"
+content-hash = "8072e24f87c4c55cc795843282e07c53466de4af8faeedfa034557c8bdb1c82e"

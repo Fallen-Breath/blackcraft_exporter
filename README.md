@@ -47,6 +47,9 @@ Query parameters:
 - `target`: The address to the Minecraft server
 - `timeout`: (optional) The maximum request timeout in seconds, including all steps inside probing. Default: `10`
 - `mimic`: (optional, java only) Override the hostname and port in the handshake packet. By default, the `target` parameter will be used
+- `proxy`: (optional, java only) If provided, connect to the server using the given proxy address
+  - Supported http, socks4, socks5 proxy. See the [python-socks](https://github.com/romis2012/python-socks) library for more information
+  - The address syntax is something like `http://127.0.0.1:1081` or `socks5://user:password@127.0.0.1:1080`
 
 ### Prometheus
 

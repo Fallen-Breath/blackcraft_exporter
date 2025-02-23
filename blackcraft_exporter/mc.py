@@ -1,4 +1,6 @@
+import asyncio
 import socket
+from typing import Optional
 
 import mcstatus
 from mcstatus import BedrockServer
@@ -18,9 +20,23 @@ logger = get_logger()
 class TCPAsyncSocketConnectionPlus(TCPAsyncSocketConnection):
 	"""
 	1. Apply TCP_NODELAY to the socket
+	2. Support proxy
 	"""
+	def __init__(self, address: Address, timeout: float, proxy: Optional[str] = None):
+		super().__init__(address, timeout)
+		self.proxy = proxy
+
 	async def connect(self) -> None:
-		await super().connect()
+		if self.proxy:
+			from python_socks.async_.asyncio import Proxy
+			proxy = Proxy.from_url(self.proxy)
+			sock = await proxy.connect(dest_host=self._addr.host, dest_port=self._addr.port)
+			logger.info(f'Connected to proxy {proxy}')
+			conn_coro = asyncio.open_connection(sock=sock)
+		else:
+			conn_coro = asyncio.open_connection(host=self._addr.host, port=self._addr.port)
+
+		self.reader, self.writer = await asyncio.wait_for(conn_coro, timeout=self.timeout)
 		sock = self.writer.transport.get_extra_info('socket')
 		sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
@@ -32,7 +48,7 @@ class JavaServerPlus(mcstatus.JavaServer):
 	"""
 
 	async def async_status_plus(self, *, ctx: ProbeContext) -> JavaStatusResponse:
-		async with TCPAsyncSocketConnectionPlus(self.address, self.timeout) as connection:
+		async with TCPAsyncSocketConnectionPlus(self.address, self.timeout, proxy=ctx.proxy) as connection:
 			return await self.__do_async_status_plus(connection, ctx=ctx)
 
 	async def __do_async_status_plus(self, connection: TCPAsyncSocketConnection, *, ctx: ProbeContext) -> JavaStatusResponse:
