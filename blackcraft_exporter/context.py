@@ -13,6 +13,7 @@ class ProbeContext:
 	registry: CollectorRegistry
 	target: str
 	timeout: float
+	mimic: Optional[str]
 
 	__start_time: float = dataclasses.field(default_factory=time.time)
 

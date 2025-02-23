@@ -29,7 +29,7 @@ async def probe_java(ctx: ProbeContext):
 			server = await JavaServerPlus.async_lookup(ctx.target)
 		get_logger().debug(f'JavaServer lookup result for {ctx.target!r}: {server.address}')
 
-		status = await server.async_status()
+		status = await server.async_status_plus(ctx=ctx)
 
 	__handle_server_status(ctx, status)
 

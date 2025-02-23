@@ -46,6 +46,7 @@ Query parameters:
 - `type`: The type of the Minecraft server. Options: `java`, `bedrock`
 - `target`: The address to the Minecraft server
 - `timeout`: (optional) The maximum request timeout in seconds, including all steps inside probing. Default: `10`
+- `mimic`: (optional, java only) Override the hostname and port in the handshake packet. By default, the `target` parameter will be used
 
 ### Prometheus
 

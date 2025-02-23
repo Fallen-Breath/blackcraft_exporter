@@ -2,18 +2,22 @@ import socket
 
 import mcstatus
 from mcstatus import BedrockServer
+from mcstatus.address import Address
 from mcstatus.bedrock_status import BedrockServerStatus
 from mcstatus.pinger import AsyncServerPinger
 from mcstatus.protocol.connection import TCPAsyncSocketConnection
 from mcstatus.status_response import JavaStatusResponse, BedrockStatusResponse
 from typing_extensions import override
 
+from blackcraft_exporter.context import ProbeContext
 from blackcraft_exporter.logger import get_logger
+
+logger = get_logger()
 
 
 class TCPAsyncSocketConnectionPlus(TCPAsyncSocketConnection):
 	"""
-	Apply TCP_NODELAY to the socket
+	1. Apply TCP_NODELAY to the socket
 	"""
 	async def connect(self) -> None:
 		await super().connect()
@@ -23,22 +27,26 @@ class TCPAsyncSocketConnectionPlus(TCPAsyncSocketConnection):
 
 class JavaServerPlus(mcstatus.JavaServer):
 	"""
-	Remove retries; Perform status + ping in one connection
+	1. Remove retries
+	2. Perform status + ping in one connection
 	"""
-	async def async_status(self, **kwargs) -> JavaStatusResponse:
+
+	async def async_status_plus(self, *, ctx: ProbeContext) -> JavaStatusResponse:
 		async with TCPAsyncSocketConnectionPlus(self.address, self.timeout) as connection:
-			return await self._retry_async_status(connection, **kwargs)
+			return await self.__do_async_status_plus(connection, ctx=ctx)
 
-	@override
-	async def _retry_async_status(self, connection: TCPAsyncSocketConnection, **kwargs) -> JavaStatusResponse:
-		logger = get_logger()
+	async def __do_async_status_plus(self, connection: TCPAsyncSocketConnection, *, ctx: ProbeContext) -> JavaStatusResponse:
+		if ctx.mimic:
+			ping_address = Address.parse_address(ctx.mimic)
+		else:
+			ping_address = self.address
+		pinger = AsyncServerPinger(connection, address=ping_address)
 
-		pinger = AsyncServerPinger(connection, address=self.address)
 		pinger.handshake()
 		result = await pinger.read_status()
 
 		if result.motd:
-			# the icon request might be costly, perform another ping request to get the real ping
+			# the icon request might be costly, so perform another ping request to get the real ping
 			logger.debug('Performing another ping request to get the real ping')
 			result.latency = await pinger.test_ping()
 
@@ -47,7 +55,7 @@ class JavaServerPlus(mcstatus.JavaServer):
 
 class BedrockServerPlus(BedrockServer):
 	"""
-	Remove retries
+	1. Remove retries
 	"""
 	@override
 	async def async_status(self, **kwargs) -> BedrockStatusResponse:

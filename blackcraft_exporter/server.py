@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Optional
 
 import dns
 from fastapi import FastAPI, Query
@@ -36,27 +36,40 @@ class ProbeRequest(BaseModel):
 	type: str
 	target: str
 	timeout: float = Field(default=10, ge=0)
+	mimic: Optional[str] = None
 
 	@field_validator('type')
 	@classmethod
-	def validate_type(cls, v: str) -> str:
-		if v not in SERVER_TYPES:
-			raise ValueError(f"Invalid type: {v!r}, should be one of {', '.join(SERVER_TYPES.keys())}")
-		return v
+	def validate_type(cls, server_type: str) -> str:
+		if server_type not in SERVER_TYPES:
+			raise ValueError(f"Invalid type: {server_type!r}, should be one of {', '.join(SERVER_TYPES.keys())}")
+		return server_type
 
 	@field_validator('target')
 	@classmethod
-	def validate_target(cls, v: str) -> str:
-		if not utils.validate_ip_port(v):
-			raise ValueError(f"Invalid target: {v!r}")
-		return v
+	def validate_target(cls, target: str) -> str:
+		if not utils.validate_ip_port(target, needs_port=False):
+			raise ValueError(f"Invalid target: {target!r}")
+		return target
+
+	@field_validator('mimic')
+	@classmethod
+	def validate_mimic(cls, mimic: Optional[str]) -> Optional[str]:
+		if not utils.validate_ip_port(mimic, needs_port=True):
+			raise ValueError(f"Invalid mimic: {mimic!r}")
+		return mimic
 
 
 @app.get('/probe', response_class=PlainTextResponse)
 async def probe(req: Annotated[ProbeRequest, Query()]):
 	probe_func = SERVER_TYPES[req.type]
 
-	ctx = ProbeContext(CollectorRegistry(auto_describe=True), req.target, req.timeout)
+	ctx = ProbeContext(
+		registry=CollectorRegistry(auto_describe=True),
+		target=req.target,
+		timeout=req.timeout,
+		mimic=req.mimic,
+	)
 	with ctx.time_cost_gauge(name='probe_duration_seconds', doc='Time taken for status probe in seconds'):
 		probe_success = 0
 		try:
