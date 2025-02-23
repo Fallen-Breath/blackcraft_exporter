@@ -1,13 +1,12 @@
 import asyncio
 from typing import Awaitable
 
-import mcstatus
 from mcstatus.status_response import BaseStatusResponse
 from typing_extensions import Callable
 
 from blackcraft_exporter.context import ProbeContext
 from blackcraft_exporter.logger import get_logger
-from blackcraft_exporter.mc import JavaServerPlus
+from blackcraft_exporter.mc import JavaServerPlus, BedrockServerPlus
 
 ProbeFunc = Callable[[ProbeContext], Awaitable[None]]
 MAX_INFO_FIELD_LENGTH = 256
@@ -37,7 +36,7 @@ async def probe_java(ctx: ProbeContext):
 
 async def probe_bedrock(ctx: ProbeContext):
 	async with asyncio.timeout(ctx.get_timeout_remaining()):
-		server = mcstatus.BedrockServer(ctx.target)
+		server = BedrockServerPlus(ctx.target)
 		status = await server.async_status()
 
 	__handle_server_status(ctx, status)
