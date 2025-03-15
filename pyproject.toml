@@ -17,6 +17,8 @@ pydantic-settings = "^2.7.1"
 dnspython = "^2.7.0"
 python-socks = {extras = ["asyncio"], version = "^2.7.1"}
 
+[tool.poetry.scripts]
+blackcraft_exporter = 'blackcraft_exporter.main:main'
 
 [build-system]
 requires = ["poetry-core"]
