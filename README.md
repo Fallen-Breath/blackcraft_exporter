@@ -33,9 +33,9 @@ Then you should be able to run it using the `blackcraft_exporter` command (make 
 
 ```bash
 $ blackcraft_exporter --version
-BlackCraft Exporter v0.1.4
+BlackCraft Exporter v0.1.5
 $ blackcraft_exporter
-41832 2025-03-16 09:10:18.367 - INFO:     Starting BlackCraft Exporter v0.1.4
+41832 2025-03-16 09:10:18.367 - INFO:     Starting BlackCraft Exporter v0.1.5
 41832 2025-03-16 09:10:18.367 - INFO:     Started server process [41832]
 41832 2025-03-16 09:10:18.368 - INFO:     Waiting for application startup.
 41832 2025-03-16 09:10:18.368 - INFO:     Application startup complete.
