@@ -2,7 +2,8 @@
 
 [![License](https://img.shields.io/github/license/Fallen-Breath/blackcraft_exporter.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
 [![Issues](https://img.shields.io/github/issues/Fallen-Breath/blackcraft_exporter.svg)](https://github.com/Fallen-Breath/blackcraft_exporter/issues)
-[![Docker](https://img.shields.io/docker/v/fallenbreath/blackcraft_exporter/latest)](https://hub.docker.com/r/fallenbreath/blackcraft_exporter)
+[![PyPI Version](https://img.shields.io/pypi/v/blackcraft_exporter.svg?label=PyPI)](https://pypi.org/project/blackcraft_exporter)
+[![Docker](https://img.shields.io/docker/v/fallenbreath/blackcraft_exporter/latest?label=DockerHub)](https://hub.docker.com/r/fallenbreath/blackcraft_exporter)
 
 A [blackbox_exporter](https://github.com/prometheus/blackbox_exporter)-like prober for Minecraft
 
