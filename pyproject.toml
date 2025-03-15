@@ -1,10 +1,25 @@
-[tool.poetry]
+[project]
 name = "blackcraft_exporter"
-version = "0.1.4"
 description = "A blackbox_exporter-like prober for Minecraft"
-authors = ["Fallen_Breath"]
-license = "GPLv3"
+license = "GPL-3.0-only"
+authors = [
+    { "name" = "Fallen_Breath" },
+]
 readme = "README.md"
+keywords = [
+    "minecraft",
+    "prometheus",
+    "prometheus-exporter",
+]
+
+[project.urls]
+repository = "https://github.com/Fallen-Breath/blackcraft_exporter"
+
+[tool.poetry]
+version = "0.1.4"
+packages = [
+    { include = "blackcraft_exporter" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.11"
