@@ -56,10 +56,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # https://github.com/JRubics/poetry-publish
-      - name: Build and publish to PyPI
-        uses: JRubics/poetry-publish@v2.1
+      - name: Setup python
+        uses: actions/setup-python@v5
         with:
-          python_version: '3.11'
-          poetry_version: '==2.1.1'
-          pypi_token: ${{ secrets.PYPI_API_TOKEN }}
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -U pip
+          pip install poetry==2.1.1
+
+      - name: Publish
+        run: |
+          poetry install
+          poetry build
+          poetry publish -u __token__ -p ${{ secrets.PYPI_API_TOKEN }}
