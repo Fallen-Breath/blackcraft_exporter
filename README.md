@@ -8,7 +8,7 @@ A [blackbox_exporter](https://github.com/prometheus/blackbox_exporter)-like prob
 
 ## To run
 
-BlackCraft Exporter requires no configuration file and can be started with no extra argument.
+BlackCraft Exporter requires no configuration file and can be started with no extra argument
 
 By default, it will listen on tcp `0.0.0.0:9165`. Run with `--help` argument to see all available CLI arguments
 
@@ -20,8 +20,9 @@ By default, it will listen on tcp `0.0.0.0:9165`. Run with `--help` argument to 
 > or install it in a dedicated [venv](https://docs.python.org/3/library/venv.html) environment
 
 BlackCraft Exporter is available on PyPI: [blackcraft_exporter](https://pypi.org/project/blackcraft_exporter/)
+as a regular python package. It requires Python >= 3.11 to run
 
-You can install it with [pipx](https://github.com/pypa/pipx)
+You can install it with [pipx](https://github.com/pypa/pipx):
 
 ```bash
 pipx install blackcraft_exporter
