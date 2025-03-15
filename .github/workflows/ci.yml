@@ -14,6 +14,7 @@ on:
 jobs:
   image:
     runs-on: ubuntu-latest
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     steps:
       - uses: actions/checkout@v4
 
@@ -49,3 +50,16 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  pypi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # https://github.com/JRubics/poetry-publish
+      - name: Build and publish to PyPI
+        uses: JRubics/poetry-publish@v2.1
+        with:
+          python_version: '3.11'
+          poetry_version: '==2.1.1'
+          pypi_token: ${{ secrets.PYPI_API_TOKEN }}
