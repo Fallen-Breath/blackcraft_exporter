@@ -12,13 +12,37 @@ BlackCraft Exporter requires no configuration file and can be started with no ex
 
 By default, it will listen on tcp `0.0.0.0:9165`. Run with `--help` argument to see all available CLI arguments
 
-### with pip
+### with PyPI
 
-TODO
+> [!IMPORTANT]
+> BlackCraft Exporter is a standalone application and has strict version requirements for its dependent Python packages.
+> It's highly suggested to install it with [pipx](https://github.com/pypa/pipx), 
+> or install it in a dedicated [venv](https://docs.python.org/3/library/venv.html) environment
+
+BlackCraft Exporter is available on PyPI: [blackcraft_exporter](https://pypi.org/project/blackcraft_exporter/)
+
+You can install it with [pipx](https://github.com/pypa/pipx)
+
+```bash
+pipx install blackcraft_exporter
+```
+
+Then you should be able to run it using the `blackcraft_exporter` command (make sure your pipx binary $PATH has been [set](https://pipx.pypa.io/stable/installation/#installing-pipx) correctly)
+
+```bash
+$ blackcraft_exporter --version
+BlackCraft Exporter v0.1.4
+$ blackcraft_exporter
+41832 2025-03-16 09:10:18.367 - INFO:     Starting BlackCraft Exporter v0.1.4
+41832 2025-03-16 09:10:18.367 - INFO:     Started server process [41832]
+41832 2025-03-16 09:10:18.368 - INFO:     Waiting for application startup.
+41832 2025-03-16 09:10:18.368 - INFO:     Application startup complete.
+41832 2025-03-16 09:10:18.368 - INFO:     Uvicorn running on http://0.0.0.0:9165 (Press CTRL+C to quit)
+```
 
 ### with docker
 
-BlackCraft Exporter is available in DockerHub: [fallenbreath/blackcraft_exporter](https://hub.docker.com/r/fallenbreath/blackcraft_exporter)
+BlackCraft Exporter is available on DockerHub: [fallenbreath/blackcraft_exporter](https://hub.docker.com/r/fallenbreath/blackcraft_exporter)
 
 ```bash
 docker run --rm -p 9165/tcp fallenbreath/blackcraft_exporter
