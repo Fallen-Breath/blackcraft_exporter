@@ -23,7 +23,7 @@ async def root():
 
 
 @app.get('/probe', response_class=PlainTextResponse)
-async def probe(req: Annotated[ProbeRequest, Query()]):
+async def probe(req: Annotated[ProbeRequest, Query()]) -> bytes:
 	probe_func = SERVER_TYPES[req.type]
 
 	ctx = ProbeContext(
@@ -52,7 +52,7 @@ async def probe(req: Annotated[ProbeRequest, Query()]):
 
 
 @app.get('/metrics', response_class=PlainTextResponse)
-async def metrics():
+async def metrics() -> bytes:
 	return generate_latest()
 
 
