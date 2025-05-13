@@ -12,6 +12,7 @@ from blackcraft_exporter.constants import PROMETHEUS_METRIC_NAMESPACE
 
 _T = TypeVar('_T')
 
+
 class RetryExceptionGroup(ExceptionGroup):
 	def __str__(self):
 		exceptions_str = ', '.join(f'({type(e)}) {e}' for e in self.exceptions)

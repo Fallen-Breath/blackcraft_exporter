@@ -31,6 +31,7 @@ class Config(BaseSettings):
 		if self.version:
 			_show_version_and_exit()
 
+
 __config = Config()
 
 
