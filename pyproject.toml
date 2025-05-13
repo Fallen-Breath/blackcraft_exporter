@@ -16,7 +16,7 @@ keywords = [
 repository = "https://github.com/Fallen-Breath/blackcraft_exporter"
 
 [tool.poetry]
-version = "0.1.6"
+version = "0.1.7"
 packages = [
     { include = "blackcraft_exporter" },
 ]
